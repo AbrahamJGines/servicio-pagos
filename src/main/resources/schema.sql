@@ -1,0 +1,6 @@
+CREATE TABLE IF NOT EXISTS pagos (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    orden_id VARCHAR(3),
+    monto DOUBLE,
+    estado VARCHAR(50)
+);
