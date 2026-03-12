@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 @Service
 public class PagoService {
@@ -18,14 +19,17 @@ public class PagoService {
         this.pagoRepository = pagoRepository;
     }
 
-    // Predicate para validar monto
-    private final Predicate<Double> montoAprobado = monto -> monto <= 1000;
+    private final Predicate<Double> esMontoAprobado = monto -> monto <= 10000;
+
+    private final Supplier<String> estadoAprobado = () -> "APPROVED";
+
+    private final Supplier<String> estadoRechazado = () -> "REJECTED";
 
     public Mono<PagoResponse> procesarPago(PagoRequest request) {
 
-        String estado = montoAprobado.test(request.monto())
-                ? "APPROVED"
-                : "REJECTED";
+        String estado = esMontoAprobado.test(request.monto())
+                ? estadoAprobado.get()
+                : estadoRechazado.get();
 
         Pago pago = new Pago();
         pago.setOrdenId(request.ordenId());
